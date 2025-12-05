@@ -5,15 +5,17 @@ on: [workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Publish with Gradle
+    name: Build and upload artifact
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: temurin
+
       - uses: actions/cache@v3
         with:
           path: |
@@ -28,7 +30,11 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew chiseledPublishMods --no-daemon
-        env:
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: ./gradlew build --no-daemon
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mod-build
+          path: |
+            **/build/libs/*.jar
