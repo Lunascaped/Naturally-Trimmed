@@ -59,6 +59,11 @@ public class ToolTrimsCompat {
             patterns.removeIf(pattern -> !(pattern.key().location().getNamespace().equals(TOOL_TRIMS_ID)));
         }
 
+        patterns.removeIf(pattern -> {
+            String namespace = pattern.key().location().getNamespace();
+            return namespace.equals("more_armor_trims") || namespace.equals("enderscape");
+        });
+
         return Util.getRandom(patterns, random);
     }
 }
